@@ -28,8 +28,8 @@ last_phase=int(input("Enter the last phase:"))
 List_input=list(map(int,input().split(",")))
 
 sorted_list=sorted(List_input)
-first_element=sorted_list[first_phase]
-second_element=sorted_list[first_phase+1]
+first_element=sorted_list[first_phase-1]
+second_element=sorted_list[first_phase]
 count =0 
 for i in range(first_element,second_element-1):
     count+=1
