@@ -1,0 +1,13 @@
+
+# for i in range(0,len(list1)):
+#     sorted=True
+#     min=i
+#     for j in range(i+1,len(list1)):
+#         if list1[j]<list1[min]:
+#             min = j
+#             sorted=False
+#         list1[i],list1[min]=list1[min],list1[i]
+#     if(sorted):
+#         break
+# print(list1)
+    
