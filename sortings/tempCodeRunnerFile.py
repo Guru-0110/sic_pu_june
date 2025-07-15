@@ -1,13 +1,12 @@
 
-# for i in range(0,len(list1)):
-#     sorted=True
-#     min=i
-#     for j in range(i+1,len(list1)):
-#         if list1[j]<list1[min]:
-#             min = j
-#             sorted=False
-#         list1[i],list1[min]=list1[min],list1[i]
-#     if(sorted):
-#         break
-# print(list1)
-    
+
+
+def partition(list1,low,high):
+    pivot=list1[low]
+    k=high
+    for i in range(low,high+1):
+        if list1[i]>pivot:
+            list1[i],list1[k]=list1[k],list1[i]
+            k-=1
+    list1[low],list1[k]=list1[k],list1[low]
+    return k
