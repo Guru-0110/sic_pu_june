@@ -1,2 +1,0 @@
-sorted = to sort the list either in ascending order or the descending order
-

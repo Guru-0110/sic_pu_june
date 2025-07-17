@@ -1,0 +1,51 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import sys  
+
+data_path = r'C:\learning\sic_pu_june\hackathon\data\clean_data.csv'
+df = pd.read_csv(data_path)
+
+df['date'] = pd.to_datetime(df['date'])
+df['month'] = df['date'].dt.strftime('%B')
+
+# Replace input() with sys.argv[1] so that we can directly choose the month on The user Interface
+selected_month = sys.argv[1]
+
+# Filter data for the selected month
+month_df = df[df['month'].str.lower() == selected_month.lower()]
+
+if month_df.empty:
+    print(f"No data available for {selected_month}.")
+else:
+    # Group by item_name to count quantity sold
+    item_sales = month_df.groupby('item_name').size().reset_index(name='quantity_sold')
+
+    min_quantity = item_sales['quantity_sold'].min()
+    least_sold_items = item_sales[item_sales['quantity_sold'] == min_quantity]
+
+    sweet_names = ', '.join(least_sold_items['item_name'].values)
+    suggestion_text = (f"Least sold sweet(s) in {selected_month}: {sweet_names}.\n"
+                       f"Consider offering discounts or promotions to boost sales.")
+
+    # Display least sold sweet(s) in terminal
+    print("Suggestion:")
+    print(suggestion_text)
+
+    plt.figure(figsize=(12,7))
+    bars = plt.bar(item_sales['item_name'], item_sales['quantity_sold'], color='skyblue')
+
+    for bar, item in zip(bars, item_sales['item_name']):
+        if item in least_sold_items['item_name'].values:
+            bar.set_color('orange')
+
+    plt.xlabel('Sweet Name')
+    plt.ylabel('Quantity Sold')
+    plt.title(f'Sales Quantity for {selected_month} (Least Sold Highlighted)')
+    plt.xticks(rotation=45)
+
+    # Adjust layout to create space for suggestion and display it
+    plt.gcf().text(0.02, 0.02, suggestion_text, fontsize=10, color='black',
+                   bbox=dict(facecolor='lightyellow', alpha=0.5))
+
+    plt.tight_layout(rect=[0, 0.15, 1, 1])  # leaves space at bottom for the better visuals
+    plt.show()
