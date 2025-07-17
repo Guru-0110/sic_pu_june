@@ -1,12 +1,24 @@
 from prophet import Prophet
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+import sys
 
+# Get current script directory
+script_dir = os.path.dirname(__file__)
 
-data_path = r'C:\learning\sic_pu_june\hackathon\data\clean_data.csv'
+# Construct relative path to data folder
+data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
+
+# Check if data file exists
+if not os.path.exists(data_path):
+    print(f"Data file not found at {data_path}")
+    sys.exit()
+
+# Read cleaned data
 df = pd.read_csv(data_path)
 
-
+# Convert 'date' to datetime and prepare monthly sales
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.to_period('M')
 monthly_sales = df.groupby('month').size().reset_index(name='total_sales')
@@ -45,7 +57,7 @@ ax.grid(True)
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-# Suggestion for maximum future sales month and checks only for the furthur data from the present
+# Suggestion for maximum future sales month and checks only for the further data from the present
 future_forecast = forecast[forecast['ds'] > df_prophet['ds'].max()]
 
 if not future_forecast.empty:
@@ -53,13 +65,13 @@ if not future_forecast.empty:
     max_month = max_row['ds'].strftime('%B %Y')
     max_sales = max_row['yhat']
 
-    # Add suggestion text on the graph for the better understanding
+    # Add suggestion text on the graph for better understanding
     suggestion_text = (f" Predicted peak month: {max_month}\n"
                        f"Expected sales: {max_sales:.0f} transactions")
 
     ax.text(0.10,0.10, suggestion_text, fontsize=10, color='black',
             transform=ax.transAxes,
-            bbox=dict(facecolor='lightyellow', alpha=0.5))   # can change the position of the suggestion table by first 2 values
+            bbox=dict(facecolor='lightyellow', alpha=0.5))   # change position with first two values
 
     print(suggestion_text)
 else:

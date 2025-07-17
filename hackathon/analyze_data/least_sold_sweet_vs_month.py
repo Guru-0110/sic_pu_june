@@ -1,10 +1,18 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys  
+import sys
+import os
 
-data_path = r'C:\learning\sic_pu_june\hackathon\data\clean_data.csv'
+# Get current script directory
+script_dir = os.path.dirname(__file__)
+
+# Construct relative path to data folder
+data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
+
+# Read cleaned data
 df = pd.read_csv(data_path)
 
+# Convert 'date' to datetime and extract month
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.strftime('%B')
 

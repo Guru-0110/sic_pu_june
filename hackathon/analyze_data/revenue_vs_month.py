@@ -1,18 +1,30 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
+import sys
 
+# Get current script directory
+script_dir = os.path.dirname(__file__)
 
-data_path = r'C:\learning\sic_pu_june\hackathon\data\clean_data.csv'
+# Construct relative path to data folder
+data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
+
+# Check if data file exists
+if not os.path.exists(data_path):
+    print(f"Data file not found at {data_path}")
+    sys.exit()
+
+# Read cleaned data
 df = pd.read_csv(data_path)
 
-
+# Convert 'date' to datetime and extract month
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.strftime('%B')
 
-
+# Group by month and sum purchase_cost
 monthly_revenue = df.groupby('month')['purchase_cost'].sum().reset_index()
 
-
+# Generate suggestion text
 if not monthly_revenue.empty:
     max_rev = monthly_revenue.loc[monthly_revenue['purchase_cost'].idxmax()]
     suggestion_text = (f"Highest revenue: {max_rev['month']} with ₹{max_rev['purchase_cost']:.2f}.\n"
@@ -38,8 +50,6 @@ plt.xticks(rotation=45)
 plt.tight_layout(rect=[0, 0.1, 1, 1])  # leaves space at bottom (10% of figure)
 plt.gcf().text(0.02, 0.02, suggestion_text, fontsize=10, color='black',
                bbox=dict(facecolor='lightyellow', alpha=0.5))
-
-
 
 plt.tight_layout()
 plt.show()

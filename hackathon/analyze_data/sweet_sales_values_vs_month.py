@@ -1,16 +1,34 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys  
+import sys
+import os
 
-data_path = r'C:\learning\sic_pu_june\hackathon\data\clean_data.csv'
+# Get current script directory
+script_dir = os.path.dirname(__file__)
+
+# Construct relative path to data folder
+data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
+
+# Check if data file exists
+if not os.path.exists(data_path):
+    print(f"Data file not found at {data_path}")
+    sys.exit()
+
+# Read cleaned data
 df = pd.read_csv(data_path)
 
+# Convert 'date' to datetime and extract month
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.strftime('%B')
 
 # Replace input() with sys.argv[1] so that we can directly choose the sweet on The user Interface
+if len(sys.argv) < 2:
+    print("Please provide the sweet name as a command line argument.")
+    sys.exit()
+
 selected_sweet = sys.argv[1]
 
+# Filter data for the selected sweet
 sweet_df = df[df['item_name'].str.lower() == selected_sweet.lower()]
 
 if sweet_df.empty:
@@ -28,7 +46,7 @@ else:
     print("Suggestion:")
     print(suggestion_text)
 
-  
+    # Plot
     plt.figure(figsize=(10,6))
     plt.bar(monthly_sales['month'], monthly_sales['quantity_sold'], color='skyblue')
     plt.xlabel('Month')
@@ -36,10 +54,9 @@ else:
     plt.title(f'{selected_sweet} Sales Quantity vs. Month')
     plt.xticks(rotation=45)
 
+    plt.tight_layout(rect=[0, 0.15, 1, 1])  # leaves space at bottom
 
-    plt.tight_layout(rect=[0, 0.15, 1, 1])  
-
-    # Display suggestion box based on the result
+    # Display suggestion box on the graph
     plt.gcf().text(0.02, 0.02, suggestion_text, fontsize=10, color='black',
                    bbox=dict(facecolor='lightyellow', alpha=0.5))
 

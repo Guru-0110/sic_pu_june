@@ -1,8 +1,28 @@
 import tkinter as tk
 import subprocess
 import pandas as pd
+import os
+import sys
 
+# Get current script directory
+script_dir = os.path.dirname(__file__)
 
+# Construct relative path to data folder
+data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
+
+# Check if data file exists
+if not os.path.exists(data_path):
+    print(f"Data file not found at {data_path}")
+    sys.exit()
+
+# Read cleaned data
+df = pd.read_csv(data_path)
+available_sweets = sorted(df['item_name'].unique())
+
+months = ["January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"]
+
+# Initialize main window
 root = tk.Tk()
 root.title("Welcome to Kanti Sweets Analytics")
 root.geometry("800x600")
@@ -10,16 +30,6 @@ root.configure(bg='#fff4e6')  # Peach cream background
 
 font_style = ("Calibri", 16)
 title_font = ("Calibri", 24, "bold")
-
-
-data_path = r"C:\learning\sic_pu_june\hackathon\data\clean_data.csv"
-df = pd.read_csv(data_path)
-available_sweets = sorted(df['item_name'].unique())
-
-
-months = ["January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December"]
-
 
 def show_welcome():
     for widget in root.winfo_children():
@@ -29,7 +39,6 @@ def show_welcome():
 
     tk.Button(root, text="Start", bg='#d4af37', fg='black', font=font_style,
               command=show_analysis_options).pack(ipadx=10, ipady=5)
-
 
 def show_analysis_options():
     for widget in root.winfo_children():
@@ -41,7 +50,7 @@ def show_analysis_options():
               command=select_sweet).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Revenue vs. Month", bg='#d4af37', fg='black', font=font_style,
-              command=lambda: run_script(r"C:\learning\sic_pu_june\hackathon\analyze_data\revenue_vs_month.py")).pack(pady=10, ipadx=10, ipady=5)
+              command=lambda: run_script(os.path.join(script_dir, 'revenue_vs_month.py'))).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Least Sold Sweet vs. Month", bg='#d4af37', fg='black', font=font_style,
               command=select_month_least_sold).pack(pady=10, ipadx=10, ipady=5)
@@ -50,18 +59,16 @@ def show_analysis_options():
               command=select_month_top_sold).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Total Sales vs. Month (Top 5)", bg='#d4af37', fg='black', font=font_style,
-              command=lambda: run_script(r"C:\learning\sic_pu_june\hackathon\analyze_data\total_sales_vs_month.py")).pack(pady=10, ipadx=10, ipady=5)
+              command=lambda: run_script(os.path.join(script_dir, 'total_sales_vs_month.py'))).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Revenue vs. Branch (Top 5)", bg='#d4af37', fg='black', font=font_style,
-              command=lambda: run_script(r"C:\learning\sic_pu_june\hackathon\analyze_data\revenue_vs_branch.py")).pack(pady=10, ipadx=10, ipady=5)
+              command=lambda: run_script(os.path.join(script_dir, 'revenue_vs_branch.py'))).pack(pady=10, ipadx=10, ipady=5)
 
-    # 🔥 New Sales Prediction button
     tk.Button(root, text="Sales Prediction (Prophet Forecast)", bg='#d4af37', fg='black', font=font_style,
               command=sales_prediction).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Back", bg='#c0c0c0', fg='black', font=font_style, command=show_welcome).pack(pady=20, ipadx=10, ipady=5)
 
-# Sweet selection screen
 def select_sweet():
     for widget in root.winfo_children():
         widget.destroy()
@@ -73,11 +80,10 @@ def select_sweet():
     tk.OptionMenu(root, sweet_var, *available_sweets).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Generate Graph", bg='#d4af37', fg='black', font=font_style,
-              command=lambda: run_script_with_arg(r"C:\learning\sic_pu_june\hackathon\analyze_data\sweet_sales_values_vs_month.py", sweet_var.get())).pack(pady=20, ipadx=10, ipady=5)
+              command=lambda: run_script_with_arg(os.path.join(script_dir, 'sweet_sales_values_vs_month.py'), sweet_var.get())).pack(pady=20, ipadx=10, ipady=5)
 
     tk.Button(root, text="Back", bg='#c0c0c0', fg='black', font=font_style, command=show_analysis_options).pack(pady=20, ipadx=10, ipady=5)
 
-# Month selection for least sold sweet
 def select_month_least_sold():
     for widget in root.winfo_children():
         widget.destroy()
@@ -89,11 +95,10 @@ def select_month_least_sold():
     tk.OptionMenu(root, month_var, *months).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Generate Graph", bg='#d4af37', fg='black', font=font_style,
-              command=lambda: run_script_with_arg(r"C:\learning\sic_pu_june\hackathon\analyze_data\least_sold_sweet_vs_month.py", month_var.get())).pack(pady=20, ipadx=10, ipady=5)
+              command=lambda: run_script_with_arg(os.path.join(script_dir, 'least_sold_sweet_vs_month.py'), month_var.get())).pack(pady=20, ipadx=10, ipady=5)
 
     tk.Button(root, text="Back", bg='#c0c0c0', fg='black', font=font_style, command=show_analysis_options).pack(pady=20, ipadx=10, ipady=5)
 
-# Month selection for top selling sweet
 def select_month_top_sold():
     for widget in root.winfo_children():
         widget.destroy()
@@ -105,17 +110,18 @@ def select_month_top_sold():
     tk.OptionMenu(root, month_var, *months).pack(pady=10, ipadx=10, ipady=5)
 
     tk.Button(root, text="Generate Graph", bg='#d4af37', fg='black', font=font_style,
-              command=lambda: run_script_with_arg(r"C:\learning\sic_pu_june\hackathon\analyze_data\top_selling_sweet_vs_month.py", month_var.get())).pack(pady=20, ipadx=10, ipady=5)
+              command=lambda: run_script_with_arg(os.path.join(script_dir, 'top_selling_sweet_vs_month.py'), month_var.get())).pack(pady=20, ipadx=10, ipady=5)
 
     tk.Button(root, text="Back", bg='#c0c0c0', fg='black', font=font_style, command=show_analysis_options).pack(pady=20, ipadx=10, ipady=5)
 
-
-# Sales Prediction function
 def sales_prediction():
     from prophet import Prophet
     import matplotlib.pyplot as plt
 
-    data_path = r"C:\learning\sic_pu_june\hackathon\data\clean_data.csv"
+    if not os.path.exists(data_path):
+        print(f"Data file not found at {data_path}")
+        return
+
     df = pd.read_csv(data_path)
 
     df['date'] = pd.to_datetime(df['date'])
@@ -131,7 +137,6 @@ def sales_prediction():
     future = model.make_future_dataframe(periods=12, freq='M')
     forecast = model.predict(future)
 
-    # Plot forecast with peak month suggestion
     fig, ax = plt.subplots(figsize=(12, 6))
     ax.plot(df_prophet['ds'], df_prophet['y'], 'ko-', label='Actual Sales')
     ax.plot(forecast['ds'], forecast['yhat'], 'b-', label='Predicted Sales')
@@ -165,7 +170,6 @@ def sales_prediction():
 
     plt.show()
 
-# Script runners
 def run_script(script_path):
     subprocess.run(['python', script_path])
 

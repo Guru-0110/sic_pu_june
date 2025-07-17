@@ -1,16 +1,35 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys  
+import sys
+import os
 
-data_path = r'C:\learning\sic_pu_june\hackathon\data\clean_data.csv'
+# Get current script directory
+script_dir = os.path.dirname(__file__)
+
+# Construct relative path to data folder
+data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
+
+# Check if data file exists
+if not os.path.exists(data_path):
+    print(f"Data file not found at {data_path}")
+    sys.exit()
+
+# Read cleaned data
 df = pd.read_csv(data_path)
 
+# Convert 'date' to datetime and extract month
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.strftime('%B')
 
-# Replace input() with sys.argv[1] so that we can directly choose the month on The user Interface
+# Check for command-line argument
+if len(sys.argv) < 2:
+    print("Please provide the month name as a command line argument.")
+    sys.exit()
+
+# Replace input() with sys.argv[1] so that we can directly choose the month on the user interface
 selected_month = sys.argv[1]
 
+# Filter data for the selected month
 month_df = df[df['month'].str.lower() == selected_month.lower()]
 
 if month_df.empty:
@@ -22,7 +41,6 @@ else:
     # Identify top selling sweet(s)
     max_quantity = item_sales['quantity_sold'].max()
     top_sold_items = item_sales[item_sales['quantity_sold'] == max_quantity]
-
 
     sweet_names = ', '.join(top_sold_items['item_name'].values)
     suggestion_text = (f"Top selling sweet(s) in {selected_month}: {sweet_names} with {max_quantity} units.\n"
@@ -47,6 +65,7 @@ else:
     # Adjust layout to create space for suggestion text
     plt.tight_layout(rect=[0, 0.15, 1, 1])
 
+    # Display suggestion text on the graph
     plt.gcf().text(0.02, 0.02, suggestion_text, fontsize=10, color='black',
                    bbox=dict(facecolor='lightyellow', alpha=0.5))
 
