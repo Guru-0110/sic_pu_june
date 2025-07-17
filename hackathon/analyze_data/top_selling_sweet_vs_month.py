@@ -26,7 +26,7 @@ if len(sys.argv) < 2:
     print("Please provide the month name as a command line argument.")
     sys.exit()
 
-# Replace input() with sys.argv[1] so that we can directly choose the month on the user interface
+# Get selected month from command line argument
 selected_month = sys.argv[1]
 
 # Filter data for the selected month
@@ -70,3 +70,4 @@ else:
                    bbox=dict(facecolor='lightyellow', alpha=0.5))
 
     plt.show()
+

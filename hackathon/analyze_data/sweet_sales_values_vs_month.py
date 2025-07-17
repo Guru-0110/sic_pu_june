@@ -21,7 +21,7 @@ df = pd.read_csv(data_path)
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.strftime('%B')
 
-# Replace input() with sys.argv[1] so that we can directly choose the sweet on The user Interface
+# Check if sweet name argument is provided
 if len(sys.argv) < 2:
     print("Please provide the sweet name as a command line argument.")
     sys.exit()

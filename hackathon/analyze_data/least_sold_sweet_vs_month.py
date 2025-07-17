@@ -9,6 +9,11 @@ script_dir = os.path.dirname(__file__)
 # Construct relative path to data folder
 data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
 
+# Check if data file exists
+if not os.path.exists(data_path):
+    print(f"Data file not found at {data_path}")
+    sys.exit()
+
 # Read cleaned data
 df = pd.read_csv(data_path)
 
@@ -16,7 +21,12 @@ df = pd.read_csv(data_path)
 df['date'] = pd.to_datetime(df['date'])
 df['month'] = df['date'].dt.strftime('%B')
 
-# Replace input() with sys.argv[1] so that we can directly choose the month on The user Interface
+# Check if month argument is provided
+if len(sys.argv) < 2:
+    print("Please provide the month name as a command line argument.")
+    sys.exit()
+
+# Replace input() with sys.argv[1] so that we can directly choose the month on the user interface
 selected_month = sys.argv[1]
 
 # Filter data for the selected month
@@ -55,5 +65,5 @@ else:
     plt.gcf().text(0.02, 0.02, suggestion_text, fontsize=10, color='black',
                    bbox=dict(facecolor='lightyellow', alpha=0.5))
 
-    plt.tight_layout(rect=[0, 0.15, 1, 1])  # leaves space at bottom for the better visuals
+    plt.tight_layout(rect=[0, 0.15, 1, 1])  # leaves space at bottom for better visuals
     plt.show()

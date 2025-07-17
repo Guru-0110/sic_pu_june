@@ -45,7 +45,8 @@ ax.plot(df_prophet['ds'], df_prophet['y'], 'ko-', label='Actual Sales')
 ax.plot(forecast['ds'], forecast['yhat'], 'b-', label='Predicted Sales')
 
 # Plot upper and lower bounds for confidence interval
-ax.fill_between(forecast['ds'], forecast['yhat_lower'], forecast['yhat_upper'], color='skyblue', alpha=0.3, label='Confidence Interval')
+ax.fill_between(forecast['ds'], forecast['yhat_lower'], forecast['yhat_upper'],
+                color='skyblue', alpha=0.3, label='Confidence Interval')
 
 # Labels and title
 ax.set_title("Forecasted Sales for Next 12 Months", fontsize=14)
@@ -57,7 +58,7 @@ ax.grid(True)
 plt.xticks(rotation=45)
 plt.tight_layout()
 
-# Suggestion for maximum future sales month and checks only for the further data from the present
+# Suggestion for maximum future sales month and checks only for future data from the present
 future_forecast = forecast[forecast['ds'] > df_prophet['ds'].max()]
 
 if not future_forecast.empty:
@@ -69,9 +70,9 @@ if not future_forecast.empty:
     suggestion_text = (f" Predicted peak month: {max_month}\n"
                        f"Expected sales: {max_sales:.0f} transactions")
 
-    ax.text(0.10,0.10, suggestion_text, fontsize=10, color='black',
+    ax.text(0.10, 0.10, suggestion_text, fontsize=10, color='black',
             transform=ax.transAxes,
-            bbox=dict(facecolor='lightyellow', alpha=0.5))   # change position with first two values
+            bbox=dict(facecolor='lightyellow', alpha=0.5))  # change position with first two values
 
     print(suggestion_text)
 else:
