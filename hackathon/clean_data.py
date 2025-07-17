@@ -5,9 +5,12 @@ import sys
 # Get current script directory
 script_dir = os.path.dirname(__file__)
 
-# Construct relative paths to raw data and cleaned data output
-raw_data_path = os.path.join(script_dir, '..', 'data', 'kanti_sweets_transactions.csv')
-cleaned_data_path = os.path.join(script_dir, '..', 'data', 'clean_data.csv')
+# Construct relative path to data folder inside hackathon
+raw_data_path = os.path.join(script_dir, 'data', 'kanti_sweets_transactions.csv')
+cleaned_data_path = os.path.join(script_dir, 'data', 'clean_data.csv')
+
+# Debug print to verify path
+print("Looking for raw data at:", raw_data_path)
 
 # Check if raw data file exists
 if not os.path.exists(raw_data_path):
